@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photo-move-audit"
+version = "0.1.2"
+description = "Local, read-only photo migration reconciliation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+license = "MIT"
+
+[project.urls]
+Repository = "https://github.com/8mdphgg5yn-eng/photo-move-audit"
+Issues = "https://github.com/8mdphgg5yn-eng/photo-move-audit/issues"
+Releases = "https://github.com/8mdphgg5yn-eng/photo-move-audit/releases"
+
+[project.optional-dependencies]
+images = ["Pillow>=10"]
+
+[project.scripts]
+photo-audit = "photo_audit.__main__:main"
+
+[tool.setuptools.package-data]
+photo_audit = ["web/*"]
+
+[tool.setuptools.packages.find]
+include = ["photo_audit*"]

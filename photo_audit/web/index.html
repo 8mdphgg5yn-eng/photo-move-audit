@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>照片搬家核对器</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到核对区域</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="照片搬家核对器首页"><span class="brandmark" aria-hidden="true">P</span><span>PHOTO AUDIT<small>照片搬家核对器</small></span></a>
+    <div class="local"><span class="dot"></span>本机处理 <span class="muted">/</span> <span id="version">v0.1.2</span></div>
+  </header>
+  <main id="main">
+    <section class="intro">
+      <div><div class="eyebrow">把回忆搬走，也把心放下。</div><h1>照片搬好了，<br>再核对一遍。</h1><p class="lead">核对来源与目标，找到遗漏、重复和读取异常。<br>改过名字，也能按文件内容认出来。</p></div>
+      <aside class="promise"><span class="promise-label">你的照片，留在你的电脑。</span><p>读取文件，不改动原件。<br>无需上传，无需登录。<br>发现问题后，由你决定怎样处理。</p><button id="demo" class="text-button">用自制样本试一遍 <span aria-hidden="true">›</span></button></aside>
+    </section>
+    <section class="workspace" aria-labelledby="setup-title">
+      <div class="section-top"><h2 id="setup-title">选择要核对的位置</h2><span class="muted small">目录或 ZIP 文件均可</span></div>
+      <div class="path-grid">
+        <div class="path-card"><label class="path-label" for="source"><span class="step">01 <span>来源</span></span><strong>原来的照片在哪里？</strong></label><input id="source" type="text" spellcheck="false" autocomplete="off" placeholder="粘贴原始目录或导出 ZIP 的完整路径"><div class="pick-actions" hidden><button class="pick-button" data-input="source" data-kind="folder" type="button" aria-label="选择来源文件夹">选文件夹</button><button class="pick-button" data-input="source" data-kind="zip" type="button" aria-label="选择来源 ZIP">选 ZIP</button></div><span class="hint">多份导出 ZIP 可放在同一个目录中。</span></div>
+        <div class="path-card"><label class="path-label" for="target"><span class="step">02 <span>目标</span></span><strong>搬到了哪里？</strong></label><input id="target" type="text" spellcheck="false" autocomplete="off" placeholder="粘贴搬家后目录的完整路径"><div class="pick-actions" hidden><button class="pick-button" data-input="target" data-kind="folder" type="button" aria-label="选择目标文件夹">选文件夹</button><button class="pick-button" data-input="target" data-kind="zip" type="button" aria-label="选择目标 ZIP">选 ZIP</button></div><span class="hint">来源和目标应分别存放，不能互相包含。</span></div>
+      </div>
+      <div class="start-row"><p class="small muted" id="path-help">也可粘贴路径。macOS：在访达中按住 Option，右键复制路径。</p><div class="actions"><button id="cancel" class="button secondary" hidden>停止核对</button><button id="start" class="button primary" disabled>开始核对 <span aria-hidden="true">›</span></button></div></div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+    <section id="progress-panel" class="progress-panel" hidden aria-live="polite"><div class="progress-track"><span></span></div><strong id="progress-title">正在读取文件…</strong><p id="progress-path" class="small muted"></p><p class="small muted">耗时取决于文件总量、磁盘速度和 ZIP 压缩情况。停止后会保留部分结果。</p></section>
+    <section id="results" aria-labelledby="result-title" hidden>
+      <div class="result-top"><div><div class="eyebrow">核对结果</div><h2 id="result-title" tabindex="-1">核对已完成</h2><p id="result-description" class="muted"></p></div><div class="actions"><button id="download-html" class="button secondary">保存阅读报告</button><button id="download-json" class="text-button">JSON</button></div></div><p id="result-paths" class="result-paths muted"></p>
+      <div class="metrics">
+        <div class="metric"><span>来源不同内容</span><strong id="m-source">0</strong><small id="m-source-detail"></small></div>
+        <div class="metric"><span>目标已找到</span><strong id="m-matched">0</strong><small>完整文件字节一致</small></div>
+        <div class="metric attention"><span>目标未找到</span><strong id="m-missing">0</strong><small>需要检查或补搬</small></div>
+        <div class="metric"><span>重复内容组</span><strong id="m-duplicates">0</strong><small id="m-duplicates-detail"></small></div>
+        <div class="metric"><span>异常与未完成项</span><strong id="m-issues">0</strong><small>展开查看具体原因</small></div>
+      </div>
+      <div class="findings">
+        <div class="tabs" role="tablist" aria-label="核对结果分类">
+          <button id="tab-missing" class="tab active" role="tab" aria-selected="true" aria-controls="items-panel" data-kind="missing">目标未找到 <span id="count-missing">0</span></button>
+          <button id="tab-duplicates" class="tab" role="tab" aria-selected="false" aria-controls="items-panel" tabindex="-1" data-kind="duplicates">重复内容 <span id="count-duplicates">0</span></button>
+          <button id="tab-issues" class="tab" role="tab" aria-selected="false" aria-controls="items-panel" tabindex="-1" data-kind="issues">异常与未完成 <span id="count-issues">0</span></button>
+          <button id="tab-extras" class="tab" role="tab" aria-selected="false" aria-controls="items-panel" tabindex="-1" data-kind="extras">目标多出 <span id="count-extras">0</span></button>
+        </div>
+        <div id="items-panel" role="tabpanel" aria-labelledby="tab-missing"><p id="list-description" class="list-description muted"></p><div id="items" aria-live="polite"></div><div id="pagination" class="pagination" hidden><button id="prev" class="button secondary">上一页</button><span id="page-label"></span><button id="next" class="button secondary">下一页</button></div></div>
+      </div>
+      <details class="coverage"><summary>这次检查了什么，哪些还不能确认？</summary><div><p id="coverage-summary"></p><p id="ignored-summary"></p><p>按完整文件 SHA-256 核对，不要求来源中的每份重复副本都在目标中保留。图片经过编辑、压缩或元数据改写后，即使看起来相同，也会被视为不同内容。</p><p>ZIP 只核验读取到的媒体条目；不检查嵌套 ZIP 和元数据 JSON。没有执行视频全程解码，也没有核对相册、拍摄日期、动态照片配对或所有动画帧。</p><p>仅有本地导出包，无法证明云端已经全部导出。不要仅凭本报告删除来源或云端照片。报告中的本机路径可能含隐私，分享前请检查。</p></div></details>
+    </section>
+    <section id="empty" class="empty-start"><div class="empty-line"></div><p>一次核对，回答三个具体问题。</p><div><span>有没有漏搬</span><span>有没有重复</span><span>有没有读取异常</span></div></section>
+    <footer><span>PHOTO AUDIT · 本机核对</span><span>核对结果供你检查，源文件始终保留。</span></footer>
+  </main>
+</body>
+</html>

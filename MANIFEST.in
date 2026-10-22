@@ -1,0 +1,11 @@
+include README.md CONTRIBUTING.md CHANGELOG.md LICENSE pyproject.toml MANIFEST.in
+include 启动照片核对器.command
+recursive-include photo_audit *.py *.html *.css *.js
+recursive-include tests *.py *.cjs
+recursive-include docs *.md
+recursive-include scripts *.py
+global-exclude *.pyc
+global-exclude .DS_Store
+prune artifacts
+prune build
+prune dist
