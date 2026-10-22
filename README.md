@@ -4,6 +4,8 @@
 
 当前稳定版为 **v0.1.2**，源码与安装包见 [GitHub Releases](https://github.com/8mdphgg5yn-eng/photo-move-audit/releases/tag/v0.1.2)。原生选择窗口、本机干净环境安装和公开真实 Takeout 小样本三项约定验证已完成。当前验证范围为 macOS；真实样本含 4 份媒体，大图库、所有导出变体和其他系统仍待扩展验证。具体见 [发布说明](docs/release-0.1.2.md)、[正式版验证记录](docs/release-validation-0.1.2.md) 和 [公开导出包实测](docs/public-export-validation.md)。核心运行只使用 Python 标准库，无账号、云服务、遥测或前端 CDN。采用 [MIT 许可证](LICENSE)。
 
+项目介绍与完整使用说明见 [中文介绍与使用指南](docs/introduction-and-usage.zh-CN.md)，包含下载安装、核对步骤、结果解读及当前检查范围。
+
 ## 直接使用
 
 需要 Python 3.10 或更新版本。
