@@ -178,7 +178,8 @@ def make_server(port=0):
                 data = json.loads(self.rfile.read(size))
                 if not isinstance(data, dict):
                     raise ValueError("请求必须为对象")
-                if self.path == "/api/pick":
+                path = urlsplit(self.path).path
+                if path == "/api/pick":
                     if not app.picker_lock.acquire(blocking=False):
                         raise ValueError("已有选择窗口打开，请先完成或取消")
                     try:
@@ -188,17 +189,17 @@ def make_server(port=0):
                     finally:
                         app.picker_lock.release()
                     self.reply(200, {"path": selected, "cancelled": selected is None})
-                elif self.path == "/api/demo":
+                elif path == "/api/demo":
                     with app.lock:
                         if app.demo is None:
                             app.demo = make_demo(app.demo_directory.name)
                     self.reply(200, {"source": app.demo[0], "target": app.demo[1]})
-                elif self.path == "/api/jobs":
+                elif path == "/api/jobs":
                     if not isinstance(data.get("source"), str) or not isinstance(data.get("target"), str):
                         raise ValueError("请填写来源和目标路径")
                     self.reply(202, {"id": app.start(data["source"], data["target"])})
-                elif self.path.startswith("/api/jobs/") and self.path.endswith("/cancel"):
-                    key = self.path.split("/")[3]
+                elif path.startswith("/api/jobs/") and path.endswith("/cancel"):
+                    key = path.split("/")[3]
                     with app.lock:
                         job = app.jobs.get(key)
                         if job is None:

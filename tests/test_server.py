@@ -109,7 +109,7 @@ class ServerTests(unittest.TestCase):
                     self.request("/api/jobs", {"source": source, "target": target})
                 self.addCleanup(error.exception.close)
                 self.assertEqual(error.exception.code, 400)
-                with self.request(f"/api/jobs/{key}/cancel", {}) as response:
+                with self.request(f"/api/jobs/{key}/cancel?from=test", {}) as response:
                     self.assertTrue(json.load(response)["ok"])
                 for _ in range(100):
                     with self.request(f"/api/jobs/{key}") as response:
